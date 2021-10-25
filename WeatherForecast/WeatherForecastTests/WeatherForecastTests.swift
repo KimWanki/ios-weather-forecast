@@ -8,25 +8,32 @@ import XCTest
 @testable import WeatherForecast
 
 class WeatherForecastTests: XCTestCase {
+    func test_TodayWeatherInfo모델_디코딩이성공하면_같은temperature값이나온다() {
+        guard let path = Bundle.main.path(forResource: "sampleOfCurrent", ofType: "json"),
+              let jsonData = try? String(contentsOfFile: path).data(using: .utf8) else {
+                  return XCTFail()
+              }
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+        do {
+            let result = try JSONDecoder().decode(TodayWeatherInfo.self, from: jsonData)
+            XCTAssertEqual(282.55, result.main!.temperature)
+        } catch {
+            XCTFail(error.localizedDescription)
         }
     }
 
+    func test_WeeklyWeatherInfo모델_디코딩이성공하면_같은temperature값이나온다() {
+        guard let path = Bundle.main.path(forResource: "sampleOfWeek", ofType: "json"),
+              let jsonData = try? String(contentsOfFile: path).data(using: .utf8) else {
+                  return XCTFail()
+              }
+        
+        do {
+            let result = try JSONDecoder().decode(WeeklyWeatherForecast.self, from: jsonData)
+            XCTAssertEqual(293.55, result.list!.first!.main!.temperature)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
 }
+
